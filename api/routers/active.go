@@ -14,4 +14,8 @@ func MakeHandlers(r *mux.Router, n negroni.Negroni, env *config.Config) {
 	r.Handle("/v1/api/actives", n.With(
 		negroni.Wrap(active.FindAll(service)),
 	)).Methods("GET")
+
+	r.Handle("/health", n.With(
+		negroni.Wrap(active.Health(service)),
+	)).Methods("GET")
 }

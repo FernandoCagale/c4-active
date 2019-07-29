@@ -39,3 +39,10 @@ func FindAll(service active.UseCase) http.Handler {
 		render.Response(w, response.NewResponseFinAll(count, actives), http.StatusOK)
 	})
 }
+
+//Health health
+func Health(service active.UseCase) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		render.Response(w, map[string]bool{"ok": true}, http.StatusOK)
+	})
+}

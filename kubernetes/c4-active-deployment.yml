@@ -20,4 +20,16 @@ spec:
         ports:
           - containerPort: 8080
         securityContext:
-          privileged: false          
+          privileged: false
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10          
