@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: c4-active
+  labels: 
+    app: c4-active
+    expose: "false"
+spec:
+  replicas: 1
+  template:
+    metadata: 
+      labels: 
+        app: c4-active
+    spec:
+      containers:
+      - name: c4-active
+        image: fernandocagale/c4-active
+        imagePullPolicy: Always
+        command:
+        ports:
+          - containerPort: 8080
+        securityContext:
+          privileged: false          
