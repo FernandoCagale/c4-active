@@ -23,13 +23,13 @@ spec:
           privileged: false
         livenessProbe:
           httpGet:
-            path: /health
+            path: /api/health
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 180
         readinessProbe:
           httpGet:
-            path: /health
+            path: /api/health
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 10          
