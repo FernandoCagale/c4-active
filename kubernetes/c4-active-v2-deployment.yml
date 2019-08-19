@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: c4-active-v2
+  labels:
+    version: v2
+    app: c4-active
+    expose: "false"
+spec:
+  replicas: 1
+  template:
+    metadata: 
+      labels:
+        version: v2
+        app: c4-active
+    spec:
+      containers:
+      - name: c4-active
+        image: fernandocagale/c4-active
+        imagePullPolicy: Always
+        command:
+        ports:
+          - containerPort: 8080
+        securityContext:
+          privileged: false
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10          

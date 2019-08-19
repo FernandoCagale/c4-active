@@ -1,15 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: c4-active
-  labels: 
+  name: c4-active-v1
+  labels:
+    version: v1
     app: c4-active
     expose: "false"
 spec:
   replicas: 1
   template:
     metadata: 
-      labels: 
+      labels:
+        version: v1
         app: c4-active
     spec:
       containers:
