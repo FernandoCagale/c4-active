@@ -20,9 +20,13 @@ echo "\n===> Docker push...\n"
 
 docker push fernandocagale/c4-active
 
-echo "\n===> Kubectl apply...\n"
+echo "\n===> Kubectl apply V1...\n"
 
-kubectl apply -f kubernetes/c4-active-deployment.yml -n c4
+kubectl apply -f kubernetes/c4-active-v1-deployment.yml -n c4
+
+echo "\n===> Kubectl apply V2...\n"
+
+kubectl apply -f kubernetes/c4-active-v2-deployment.yml -n c4
 
 echo "\n===> Kubectl pods...\n"
 

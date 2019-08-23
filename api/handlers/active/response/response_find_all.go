@@ -1,6 +1,9 @@
 package response
 
-import "github.com/FernandoCagale/c4-active/pkg/entity"
+import (
+	"github.com/FernandoCagale/c4-active/pkg/entity"
+	"os"
+)
 
 //FindAllResponse dto
 type FindAllResponse struct {
@@ -10,13 +13,24 @@ type FindAllResponse struct {
 
 //Data options
 type Data struct {
-	Count int                `json:"count"`
-	Rows  []*FindAllResponse `json:"rows"`
+	Count   int                `json:"count"`
+	Rows    []*FindAllResponse `json:"rows"`
+	Version string             `json:"version"`
 }
 
 //NewResponseFinAll findAll
 func NewResponseFinAll(count int, rows []*entity.Active) *Data {
-	return &Data{count, convertResponseFinAllCanal(rows)}
+	version := os.Getenv("VERSION")
+
+	if version ==  "" {
+		version = "V1"
+	}
+
+	return &Data{
+		Count: count,
+		Rows:  convertResponseFinAllCanal(rows),
+		Version: version,
+	}
 }
 
 func convertResponseFinAllCanal(actives []*entity.Active) (rows []*FindAllResponse) {

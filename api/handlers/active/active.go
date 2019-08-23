@@ -1,14 +1,16 @@
 package active
 
 import (
-	"net/http"
-
+	"encoding/json"
+	"fmt"
 	"github.com/FernandoCagale/c4-active/api/handlers/active/response"
 	"github.com/FernandoCagale/c4-active/api/infra"
 	"github.com/FernandoCagale/c4-active/pkg/active"
 	"github.com/FernandoCagale/c4-active/pkg/entity"
 	"github.com/FernandoCagale/c4-active/pkg/infra/errors"
+	"github.com/FernandoCagale/c4-active/pkg/infra/logger"
 	"github.com/FernandoCagale/c4-active/pkg/infra/render"
+	"net/http"
 )
 
 //FindAll findAll
@@ -20,6 +22,12 @@ func FindAll(service active.UseCase) http.Handler {
 		if err != nil {
 			render.ResponseError(w, errors.AddBadRequestError("Failed to decode request query"))
 			return
+		}
+
+		if reqHeadersBytes, err := json.Marshal(r.Header); err != nil {
+			logger.WithFields(logger.Fields{"Could not Marshal Req Headers - Message": err.Error()}).Error("Header")
+		} else {
+			fmt.Println(string(reqHeadersBytes))
 		}
 
 		page, err := infra.GetPage(r)
