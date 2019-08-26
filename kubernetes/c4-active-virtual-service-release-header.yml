@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: c4-active-40-60v1v2
+  namespace: c4
+  labels:
+    app: c4-active
+    version: v1
+  annotations:
+    at: '25-08-2019 12:00:00'
+    users: fernando
+spec:
+  hosts:
+  - '*'
+  gateways:
+  - service-gateway-c4
+  http:
+  - match:
+    - headers:
+        x-version:
+          exact: c4-active-v1
+      uri:
+        prefix: /api/v1/active
+    route:
+    - destination:
+        host: c4-active
+        port:
+          number: 8080
+        subset: c4-active-v1
+  - route:
+    - destination:
+        host: c4-active
+        port:
+          number: 8080
+        subset: c4-active-v2
