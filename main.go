@@ -1,23 +1,45 @@
 package main
 
 import (
-	"github.com/FernandoCagale/c4-active/api/routers"
-	"github.com/FernandoCagale/c4-active/config"
-	"github.com/urfave/negroni"
+	"github.com/FernandoCagale/c4-active/api/middleware"
+	"github.com/FernandoCagale/c4-active/pkg/infra/logger"
+	"github.com/joho/godotenv"
+	"go.uber.org/zap"
+	"net/http"
+	"time"
 )
 
+var log *zap.SugaredLogger
+
+func init() {
+	godotenv.Load()
+
+	log = logger.Get()
+}
+
 func main() {
-	env := config.LoadEnv()
+	defer log.Sync()
 
-	n := negroni.New(
-		negroni.NewLogger(),
-	)
+	log.Debug("Initializing actives")
 
-	router := routers.NewRouter()
+	app, e := SetupApplication()
 
-	routers.MakeHandlers(router, *n, env)
+	if e != nil {
+		panic("Erro to start application")
+	}
 
-	n.UseHandler(router)
+	router := app.MakeHandlers()
 
-	n.Run(":8080")
+	router.Use(middleware.Header)
+
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         ":8000",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Debug("Started successfully")
+
+	log.Fatal(srv.ListenAndServe())
 }

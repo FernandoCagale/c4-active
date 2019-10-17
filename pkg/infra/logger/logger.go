@@ -1,45 +1,40 @@
 package logger
 
-import "github.com/sirupsen/logrus"
+import (
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	defaultLog "log"
+	"os"
+	"strings"
+	"sync"
+)
 
-var logger = logrus.New()
+var (
+	once   sync.Once
+	logger *zap.SugaredLogger
+)
 
-//Fields to logs
-type Fields map[string]interface{}
+func Get() *zap.SugaredLogger {
+	once.Do(func() {
+		log, err := newLogger()
+		if err != nil {
+			defaultLog.Fatalf("Can't initialize logger: %v", err)
+		}
+		logger = log.Sugar()
+		logger.Debug("Created new logger")
+	})
 
-//Info message
-func Info(args ...interface{}) {
-	logger.Info(args...)
+	return logger
 }
 
-//Debug message
-func Debug(args ...interface{}) {
-	logger.Debug(args...)
-}
-
-//Warn message
-func Warn(args ...interface{}) {
-	logger.Warn(args...)
-}
-
-//Error message
-func Error(args ...interface{}) {
-	logger.Error(args...)
-}
-
-//Fatal message
-func Fatal(args ...interface{}) {
-	logger.Fatal(args...)
-}
-
-//WithFields adds a field
-//logger.WithFields(logger.Fields{
-//  "ID":   "id",
-//}).Info("info")
-func WithFields(fields Fields) *logrus.Entry {
-	fieldsMap := make(logrus.Fields)
-	for index, property := range fields {
-		fieldsMap[index] = property
+func newLogger() (*zap.Logger, error) {
+	config := zap.NewProductionConfig()
+	if lvl, exists := os.LookupEnv("LOG_LEVEL"); exists {
+		lvl = strings.ToLower(lvl)
+		if lvl == "debug" {
+			config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+		}
 	}
-	return logrus.WithFields(fieldsMap)
+	log, err := config.Build()
+	return log, err
 }

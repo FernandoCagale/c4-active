@@ -3,3 +3,4 @@ build
 .env
 c4-active
 c4-active.iml
+wire_gen.go
