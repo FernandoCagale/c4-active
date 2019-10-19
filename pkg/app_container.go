@@ -7,4 +7,4 @@ import (
 	"github.com/google/wire"
 )
 
-var Container = wire.NewSet(active.ActiveSet, handlers.ApplicationHandlersSet, routers.RoutesSet)
+var Container = wire.NewSet(active.Set, handlers.Set, routers.Set)
